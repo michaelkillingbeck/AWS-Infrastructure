@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  Linux:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      SubnetId: ###
+      ImageId: ###
+      InstanceType: ###
+      KeyName: ###
+      SecurityGroupIds: 
+        - ###
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 250
+      Tags:
+        -
+          Key: Environment
+          Value: Dev Test
+Outputs:
+  PublicIp:
+    Value:
+      Fn::GetAtt:
+        - Linux
+        - PublicIp
+    Description: Server's PublicIp Address
