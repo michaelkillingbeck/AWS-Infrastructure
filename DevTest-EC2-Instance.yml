@@ -1,26 +1,82 @@
 AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  AmiParameter:
+      Description: The AMI Id to use for the instance
+      Type: String
+  InstanceTypeParameter:
+    Default:  t2.micro
+    Description: The type of instance to create
+    Type: String
+  VpcParameter:
+    Description: The Id of the VPC to create the resources in
+    Type: String
 Resources:
-  Linux:
-    Type: 'AWS::EC2::Instance'
+  IntegrationSubnet:
     Properties:
-      SubnetId: ###
-      ImageId: ###
-      InstanceType: ###
-      KeyName: ###
-      SecurityGroupIds: 
-        - ###
+      CidrBlock:  172.31.48.0/20
+      MapPublicIpOnLaunch: True
+      Tags:
+        -
+          Key:  Environment
+          Value:  Integration
+      VpcId:  !Ref VpcParameter
+    Type: 'AWS::EC2::Subnet'
+  IntegrationSecurityGroup:
+    Properties:
+      GroupDescription:  Group to allow HTTP and SSH access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: 22
+          ToPort: 22
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: 80
+          ToPort: 80
+      VpcId:  !Ref VpcParameter
+    Type: AWS::EC2::SecurityGroup
+  WebServer:
+    CreationPolicy:
+      ResourceSignal:
+        Timeout:  PT5M
+    Properties:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
             VolumeSize: 250
+      IamInstanceProfile: EC2-CodeDeploy-InstanceProfile
+      InstanceType: !Ref InstanceTypeParameter
+      ImageId: !Ref AmiParameter
+      KeyName: EC2-DevTest
+      SecurityGroupIds: 
+        - !Ref IntegrationSecurityGroup
+      SubnetId: !Ref IntegrationSubnet
       Tags:
-        -
-          Key: Environment
-          Value: Dev Test
+        - 
+          Key:  Environment  
+          Value: Integration
+        - 
+          Key:  Name  
+          Value: IntegrationWebServer
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          sudo yum update -y
+          sudo amazon-linux-extras install nginx1
+          sudo service nginx start
+          sudo yum install ruby
+          sudo yum install wget
+          wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
+          chmod +x ./install
+          sudo ./install auto
+          wget https://dot.net/v1/dotnet-install.sh
+          chmod +x ./dotnet-install.sh
+          /opt/aws/bin/cfn-signal -e $? --stack Integration --resource WebServer --region eu-west-2
+    Type: AWS::EC2::Instance
 Outputs:
   PublicIp:
+    Description: Server's PublicIp Address
     Value:
       Fn::GetAtt:
-        - Linux
+        - WebServer
         - PublicIp
-    Description: Server's PublicIp Address
