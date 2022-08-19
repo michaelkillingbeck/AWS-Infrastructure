@@ -71,7 +71,8 @@ Resources:
           sudo ./install auto
           wget https://dot.net/v1/dotnet-install.sh
           chmod +x ./dotnet-install.sh
-          /opt/aws/bin/cfn-signal -e $? --stack Integration --resource WebServer --region eu-west-2
+          ./dotnet-install.sh
+          /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
 Outputs:
   PublicIp:
