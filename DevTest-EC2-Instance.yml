@@ -1,8 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   AmiParameter:
-      Description: The AMI Id to use for the instance
-      Type: String
+    Default:  ami-034ef92d9dd822b08
+    Description: The AMI Id to use for the instance
+    Type: String
   InstanceTypeParameter:
     Default:  t2.micro
     Description: The type of instance to create
@@ -66,12 +67,12 @@ Resources:
           sudo service nginx start
           sudo yum install ruby
           sudo yum install wget
-          wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
-          chmod +x ./install
+          echo $HOME
+          sudo mkdir /home/cfn-install
+          cd /home/cfn-install
+          sudo wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
+          sudo chmod +x ./install
           sudo ./install auto
-          wget https://dot.net/v1/dotnet-install.sh
-          chmod +x ./dotnet-install.sh
-          ./dotnet-install.sh
           /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
 Outputs:
