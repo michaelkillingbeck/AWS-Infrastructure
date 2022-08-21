@@ -73,6 +73,8 @@ Resources:
           sudo wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
           sudo chmod +x ./install
           sudo ./install auto
+          sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
+          sudo yum install aspnetcore-runtime-6.0 -y
           /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
 Outputs:
