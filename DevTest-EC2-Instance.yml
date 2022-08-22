@@ -59,6 +59,9 @@ Resources:
         - 
           Key:  Name  
           Value: IntegrationWebServer
+        -
+          Key:  Type
+          Value:  Testing
       UserData:
         Fn::Base64: |
           #!/bin/bash
