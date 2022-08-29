@@ -83,7 +83,7 @@ Resources:
           sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
           sudo yum install aspnetcore-runtime-6.0 -y
           sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-          sudo yum install certbot python-certbot-nginx
+          sudo yum install -y certbot python-certbot-nginx
           /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
 Outputs:
