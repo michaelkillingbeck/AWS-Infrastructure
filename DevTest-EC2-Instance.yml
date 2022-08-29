@@ -34,6 +34,10 @@ Resources:
           CidrIp: 0.0.0.0/0
           FromPort: 80
           ToPort: 80
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: 443
+          ToPort: 443
       VpcId:  !Ref VpcParameter
     Type: AWS::EC2::SecurityGroup
   WebServer:
