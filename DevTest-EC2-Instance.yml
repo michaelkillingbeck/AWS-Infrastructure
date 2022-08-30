@@ -98,6 +98,7 @@ Resources:
       HostedZoneId: !GetAtt IntegrationHostedZone.Id
       Name: ics.integration.michaelkillingbeck.com
       ResourceRecords:  [!GetAtt WebServer.PublicIp]
+      TTL:  900
       Type: A
     Type: AWS::Route53::RecordSet
   RootNSRecordForSubdomain:
