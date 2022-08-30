@@ -95,6 +95,7 @@ Resources:
       - IntegrationHostedZone
       - WebServer
     Properties:
+      HostedZoneId: !GetAtt ATypeRecordsForSubdomain.Id
       Name: ics.integration.michaelkillingbeck.com
       ResourceRecords:  [!GetAtt WebServer.PublicIp]
       Type: A
