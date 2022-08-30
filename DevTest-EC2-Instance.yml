@@ -86,6 +86,28 @@ Resources:
           sudo yum install -y certbot python-certbot-nginx
           /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
+  IntegrationHostedZone:
+    Properties:
+      Name: integration.michaelkillingbeck.com
+    Type: AWS::Route53::HostedZone
+  ATypeRecordsForSubdomain:
+    DependsOn:
+      - IntegrationHostedZone
+      - WebServer
+    Properties:
+      Name: ics.integration.michaelkillingbeck.com
+      ResourceRecords:  !GetAtt WebServer.PublicIp
+      Type: A
+    Type: AWS::Route53::RecordSet
+  RootNSRecordForSubdomain:
+    DependsOn:
+      - IntegrationHostedZone
+    Properties:
+      HostedZoneId: Z04993711QUGAJ374KN8E
+      Name: integration.michaelkillingbeck.com
+      ResourceRecords:  !GetAtt IntegrationHostedZone.NameServers
+      Type: NS
+    Type: AWS::Route53::RecordSet
 Outputs:
   PublicIp:
     Description: Server's PublicIp Address
