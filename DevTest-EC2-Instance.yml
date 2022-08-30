@@ -106,6 +106,7 @@ Resources:
       HostedZoneId: Z04993711QUGAJ374KN8E
       Name: integration.michaelkillingbeck.com
       ResourceRecords:  !GetAtt IntegrationHostedZone.NameServers
+      TTL:  900
       Type: NS
     Type: AWS::Route53::RecordSet
 Outputs:
