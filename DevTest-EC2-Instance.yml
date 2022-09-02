@@ -4,9 +4,23 @@ Parameters:
     Default:  ami-034ef92d9dd822b08
     Description: The AMI Id to use for the instance
     Type: String
+  BaseIntegrationAddressParameter:
+    Default:  integration.michaelkillingbeck.com
+    Description:  The base address for the Integration environment
+    Type: String
+  EC2KeyPairNameParameter:
+    Description:  The SSH KeyPair to use when creating the Integration WebServer
+    Type: String
+  ImageColourSwapAddressParameter:
+    Default:  ics.integration.michaelkillingbeck.com
+    Description:  The address of the Image Colour Swap Site
+    Type: String
   InstanceTypeParameter:
     Default:  t2.micro
     Description: The type of instance to create
+    Type: String
+  RootHostedZoneIdParameter:
+    Description:  The Id of the Hosted Zone for michaelkillingbeck.com
     Type: String
   VpcParameter:
     Description: The Id of the VPC to create the resources in
@@ -52,7 +66,7 @@ Resources:
       IamInstanceProfile: EC2-CodeDeploy-InstanceProfile
       InstanceType: !Ref InstanceTypeParameter
       ImageId: !Ref AmiParameter
-      KeyName: EC2-DevTest
+      KeyName: !Ref EC2KeyPairNameParameter
       SecurityGroupIds: 
         - !Ref IntegrationSecurityGroup
       SubnetId: !Ref IntegrationSubnet
@@ -63,9 +77,6 @@ Resources:
         - 
           Key:  Name  
           Value: IntegrationWebServer
-        -
-          Key:  Type
-          Value:  Testing
       UserData:
         Fn::Base64: |
           #!/bin/bash
@@ -88,15 +99,15 @@ Resources:
     Type: AWS::EC2::Instance
   IntegrationHostedZone:
     Properties:
-      Name: integration.michaelkillingbeck.com
+      Name: !Ref BaseIntegrationAddressParameter
     Type: AWS::Route53::HostedZone
-  ATypeRecordsForSubdomain:
+  ATypeRecordsForImageColourSwap:
     DependsOn:
       - IntegrationHostedZone
       - WebServer
     Properties:
       HostedZoneId: !GetAtt IntegrationHostedZone.Id
-      Name: ics.integration.michaelkillingbeck.com
+      Name: !Ref ImageColourSwapAddressParameter
       ResourceRecords:  [!GetAtt WebServer.PublicIp]
       TTL:  900
       Type: A
@@ -105,8 +116,8 @@ Resources:
     DependsOn:
       - IntegrationHostedZone
     Properties:
-      HostedZoneId: Z04993711QUGAJ374KN8E
-      Name: integration.michaelkillingbeck.com
+      HostedZoneId: !Ref RootHostedZoneIdParameter
+      Name: !Ref BaseIntegrationAddressParameter
       ResourceRecords:  !GetAtt IntegrationHostedZone.NameServers
       TTL:  900
       Type: NS
