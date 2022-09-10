@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description:  Lambda function for ImageColourSwap
+Resources:
+  ICSProcessingFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime:  dotnet6
+      Role: arn:aws:iam::267855555195:role/service-role/CodePipelineUpdateLambda-role-hty0oci1
+      Code:
+        S3Bucket: artifactstore-mk-test
+        S3Key:  ImageColourSwapLambda
+      Handler:  Lambda::ImageColourSwap.Lambda.Program::Handler
