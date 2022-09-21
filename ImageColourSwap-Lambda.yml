@@ -18,3 +18,41 @@ Resources:
       FunctionName: !Ref ICSProcessingFunction
       Principal:  'apigateway.amazonaws.com'
     Type: 'AWS::Lambda::Permission'
+  ImageColourSwapAPI:
+    Properties:
+      Name: ImageColourSwap
+    Type: 'AWS::ApiGateway::RestApi'
+  Resource:
+    Properties:
+      ParentId: !GetAtt ImageColourSwapAPI.RootResourceId
+      RestApiId:  !Ref ImageColourSwapAPI
+    Type: 'AWS::ApiGateway::Resource'
+  GetMethod:
+    Properties:
+      AuthorizationType:  NONE
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod:  POST
+        IntegrationResponses:
+          - StatusCode: 200
+        PassthroughBehavior: WHEN_NO_TEMPLATES
+        RequestTemplates: { 
+          "application/json": "#set($inputRoot = $input.path('$')) { \"palletteImage\": \"$input.params('palletteImage')\", \"sourceImage\": \"$input.params('sourceImage')\" }"
+        }  
+        Type: AWS
+        Uri:  {"Fn::Join" : 
+          ["", ["arn:aws:apigateway:", {"Ref":"AWS::Region"},":lambda:path/2015-03-31/functions/"{"Fn::GetAtt": ["ICSProcessingFunction", "Arn"]}, "/invocations"]
+        ]}
+      RequestParameters: {
+        method.request.querystring.palletteImage: true,
+        method.request.querystring.sourceImage: true
+      }
+      ResourceId: !GetAtt ImageColourSwapAPI.RootResourceId
+      RestApiId:  !Ref ImageColourSwapAPI
+    Type: 'AWS::ApiGateway::Method' 
+  DemoLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ICSProcessingFunction.Arn
+      Action: "lambda:InvokeFunction"
+      Principal: apigateway.amazonaws.com
