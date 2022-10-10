@@ -25,6 +25,7 @@ Resources:
   Resource:
     Properties:
       ParentId: !GetAtt ImageColourSwapAPI.RootResourceId
+      PathPart: ics
       RestApiId:  !Ref ImageColourSwapAPI
     Type: 'AWS::ApiGateway::Resource'
   GetMethod:
@@ -41,7 +42,7 @@ Resources:
         }  
         Type: AWS
         Uri:  {"Fn::Join" : 
-          ["", ["arn:aws:apigateway:", {"Ref":"AWS::Region"},":lambda:path/2015-03-31/functions/"{"Fn::GetAtt": ["ICSProcessingFunction", "Arn"]}, "/invocations"]
+          ["", ["arn:aws:apigateway:", {"Ref":"AWS::Region"},":lambda:path/2015-03-31/functions/",{"Fn::GetAtt": ["ICSProcessingFunction", "Arn"]}, "/invocations"]
         ]}
       RequestParameters: {
         method.request.querystring.palletteImage: true,
@@ -56,3 +57,10 @@ Resources:
       FunctionName: !GetAtt ICSProcessingFunction.Arn
       Action: "lambda:InvokeFunction"
       Principal: apigateway.amazonaws.com
+  LambdaParameter:
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: ICS-LambdaUrl-Integration
+      Type: String
+      Tier: Standard
+      Value: !GetAtt ICSProcessingFunction.Arn
