@@ -57,10 +57,18 @@ Resources:
       FunctionName: !GetAtt ICSProcessingFunction.Arn
       Action: "lambda:InvokeFunction"
       Principal: apigateway.amazonaws.com
-  LambdaParameter:
-    Type: 'AWS::SSM::Parameter'
+  ApiDeployment:
+    DependsOn:  GetMethod
     Properties:
-      Name: ICS-LambdaUrl-Integration
+      Description:  'Test Description'
+      RestApiId:  !Ref ImageColourSwapAPI
+      StageName:  Integration
+    Type: 'AWS::ApiGateway::Deployment'
+  LambdaParameter:
+    DependsOn:  ApiDeployment
+    Properties:
+      Name: IntegrationProcessingUri
       Type: String
       Tier: Standard
-      Value: !GetAtt ICSProcessingFunction.Arn
+      Value: !Ref ImageColourSwapAPI
+    Type: 'AWS::SSM::Parameter'
