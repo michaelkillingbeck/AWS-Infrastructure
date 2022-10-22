@@ -95,6 +95,12 @@ Resources:
           sudo yum install aspnetcore-runtime-6.0 -y
           sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
           sudo yum install -y certbot python-certbot-nginx
+          sudo wget https://dot.net/v1/dotnet-install.sh >> output.txt
+          sudo chmod +x ./dotnet-install.sh >> output.txt
+          sudo ./dotnet-install.sh >> output.txt
+          sudo yum install dotnet-sdk-6.0 -y
+          export PATH=/home/ec2-user/.dotnet:$PATH
+          export DOTNET_CLI_HOME=/tmp/
           /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
   IntegrationHostedZone:
