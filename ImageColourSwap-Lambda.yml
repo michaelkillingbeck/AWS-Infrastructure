@@ -44,6 +44,9 @@ Resources:
         Uri:  {"Fn::Join" : 
           ["", ["arn:aws:apigateway:", {"Ref":"AWS::Region"},":lambda:path/2015-03-31/functions/",{"Fn::GetAtt": ["ICSProcessingFunction", "Arn"]}, "/invocations"]
         ]}
+      MethodResponses:
+        - StatusCode: "200"
+          ResponseModels:  { "application/json": "Empty" }
       RequestParameters: {
         method.request.querystring.palletteImage: true,
         method.request.querystring.sourceImage: true
