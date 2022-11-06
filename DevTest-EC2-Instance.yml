@@ -62,7 +62,7 @@ Resources:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
-            VolumeSize: 25
+            VolumeSize: 5
             VolumeType: gp2
       IamInstanceProfile: EC2-CodeDeploy-InstanceProfile
       InstanceType: !Ref InstanceTypeParameter
