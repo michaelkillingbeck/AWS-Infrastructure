@@ -4,13 +4,10 @@ Parameters:
     Default:  ami-034ef92d9dd822b08
     Description: The AMI Id to use for the instance
     Type: String
-  BaseIntegrationAddressParameter:
-    Default:  integration.michaelkillingbeck.com
-    Description:  The base address for the Integration environment
-    Type: String
   EC2KeyPairNameParameter:
+    Default:  /CloudFormation/DevTestSSHKey
     Description:  The SSH KeyPair to use when creating the Integration WebServer
-    Type: String
+    Type: AWS::SSM::Parameter::Value<String>
   ImageColourSwapAddressParameter:
     Default:  ics.integration.michaelkillingbeck.com
     Description:  The address of the Image Colour Swap Site
@@ -19,9 +16,10 @@ Parameters:
     Default:  t2.micro
     Description: The type of instance to create
     Type: String
-  RootHostedZoneIdParameter:
-    Description:  The Id of the Hosted Zone for michaelkillingbeck.com
-    Type: String
+  IntegrationHostedZoneId:
+    Default:  /CloudFormation/Integration/IntegrationHostedZoneId
+    Description:  The ID of the Route53 Hosted Zone to add the DNS A-Type records to
+    Type: AWS::SSM::Parameter::Value<String>
   VpcParameter:
     Description: The Id of the VPC to create the resources in
     Type: String
@@ -104,30 +102,15 @@ Resources:
           export DOTNET_CLI_HOME=/tmp/
           /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
-  IntegrationHostedZone:
-    Properties:
-      Name: !Ref BaseIntegrationAddressParameter
-    Type: AWS::Route53::HostedZone
   ATypeRecordsForImageColourSwap:
     DependsOn:
-      - IntegrationHostedZone
       - WebServer
     Properties:
-      HostedZoneId: !GetAtt IntegrationHostedZone.Id
+      HostedZoneId: !Ref IntegrationHostedZoneId
       Name: !Ref ImageColourSwapAddressParameter
       ResourceRecords:  [!GetAtt WebServer.PublicIp]
       TTL:  900
       Type: A
-    Type: AWS::Route53::RecordSet
-  RootNSRecordForSubdomain:
-    DependsOn:
-      - IntegrationHostedZone
-    Properties:
-      HostedZoneId: !Ref RootHostedZoneIdParameter
-      Name: !Ref BaseIntegrationAddressParameter
-      ResourceRecords:  !GetAtt IntegrationHostedZone.NameServers
-      TTL:  900
-      Type: NS
     Type: AWS::Route53::RecordSet
 Outputs:
   PublicIp:
