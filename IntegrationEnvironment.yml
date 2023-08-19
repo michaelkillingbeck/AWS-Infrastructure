@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
+
 Parameters:
   AmiParameter:
     Default:  ami-034ef92d9dd822b08
@@ -11,32 +12,40 @@ Parameters:
     Default:  t2.micro
     Description: The type of instance to create
     Type: String
+
 Resources:
-  IntegrationVPC:
-    Properties:
-      CidrBlock: 10.0.0.0/16
-      EnableDnsHostnames: 'false'
-      EnableDnsSupport: 'false'
-      InstanceTenancy: 'default'
-      Tags:
-        - 
-          Key: Name
-          Value: Int-VPC
-        -
-          Key: Environment
-          Value: Integration
-    Type: AWS::EC2::VPC
-  IntegrationInternetGateway:
+  InternetGateway:
     Properties:
       Tags:
-        -
-          Key: Name
-          Value:  Int-InternetGateway
         -
           Key:  Environment
           Value:  Integration
+        -
+          Key: Name
+          Value:  InternetGateway
     Type: AWS::EC2::InternetGateway
-  IntegrationSecurityGroup:
+
+  InternetGatewayRoute:
+    DependsOn: InternetGateway
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref VPCRouteTable
+    Type: AWS::EC2::Route
+
+  KeyPair:
+    Properties:
+      KeyName:  IntegrationWebServerKeyPair
+      Tags:
+        -
+          Key:  Environment
+          Value:  Integration
+        -
+          Key: Name
+          Value:  WebServerKeyPair
+    Type: AWS::EC2::KeyPair
+
+  SecurityGroup:
     Properties:
       GroupDescription:  Group to allow HTTP and SSH access
       SecurityGroupIngress:
@@ -52,10 +61,18 @@ Resources:
           CidrIp: 0.0.0.0/0
           FromPort: 443
           ToPort: 443
-      VpcId:  !Ref IntegrationVPC
+      Tags:
+        -
+          Key:  Environment
+          Value:  Integration
+        -
+          Key: Name
+          Value:  SecurityGroup
+      VpcId:  !Ref VPC
     Type: AWS::EC2::SecurityGroup
-  IntegrationSubnet:
-    DependsOn: IntegrationVPC
+
+  Subnet:
+    DependsOn: VPC
     Properties:
       CidrBlock:  10.0.0.0/16
       MapPublicIpOnLaunch: True
@@ -63,14 +80,40 @@ Resources:
         -
           Key:  Environment
           Value:  Integration
-      VpcId:  !Ref IntegrationVPC
+        -
+          Key: Name
+          Value:  Subnet
+      VpcId:  !Ref VPC
     Type: 'AWS::EC2::Subnet'
-  IntegrationVPCGatewayAttachment:
+
+  SubnetRouteTableAssociation:
     Properties:
-      InternetGatewayId: !Ref IntegrationInternetGateway
-      VpcId:  !Ref IntegrationVPC
+      SubnetId: !Ref Subnet
+      RouteTableId: !Ref VPCRouteTable
+    Type: AWS::EC2::SubnetRouteTableAssociation
+
+  VPC:
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: 'false'
+      EnableDnsSupport: 'false'
+      InstanceTenancy: 'default'
+      Tags:
+        -
+          Key: Environment
+          Value: Integration
+        - 
+          Key: Name
+          Value: VPC
+    Type: AWS::EC2::VPC
+  
+  VPCGatewayAttachment:
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId:  !Ref VPC
     Type: AWS::EC2::VPCGatewayAttachment
-  IntegrationVPCRouteTable:
+    
+  VPCRouteTable:
     Properties:
       Tags:
         -
@@ -78,21 +121,10 @@ Resources:
           Value:  Integration
         -
           Key:  Name
-          Value:  IntegrationVPCRouteTable
-      VpcId:  !Ref IntegrationVPC
+          Value:  VPCRouteTable
+      VpcId:  !Ref VPC
     Type: AWS::EC2::RouteTable
-  IntegrationInternetGatewayRoute:
-    DependsOn: IntegrationInternetGateway
-    Properties:
-      DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref IntegrationInternetGateway
-      RouteTableId: !Ref IntegrationVPCRouteTable
-    Type: AWS::EC2::Route
-  IntegrationSubnetRouteTableAssociation:
-    Properties:
-      SubnetId: !Ref IntegrationSubnet
-      RouteTableId: !Ref IntegrationVPCRouteTable
-    Type: AWS::EC2::SubnetRouteTableAssociation
+
   WebServer:
     Properties:
       BlockDeviceMappings:
@@ -103,9 +135,10 @@ Resources:
       IamInstanceProfile: !Ref InstanceProfileParameter
       InstanceType: !Ref InstanceTypeParameter
       ImageId: !Ref AmiParameter
+      KeyName:  !Ref KeyPair
       SecurityGroupIds: 
-        - !Ref IntegrationSecurityGroup
-      SubnetId: !Ref IntegrationSubnet
+        - !Ref SecurityGroup
+      SubnetId: !Ref Subnet
       Tags:
         - 
           Key:  Environment  
@@ -114,6 +147,7 @@ Resources:
           Key:  Name  
           Value: IntegrationWebServer
     Type: AWS::EC2::Instance
+
 Outputs:
   PublicIp:
     Description: Server's PublicIp Address
