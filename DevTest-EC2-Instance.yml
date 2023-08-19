@@ -4,36 +4,38 @@ Parameters:
     Default:  ami-034ef92d9dd822b08
     Description: The AMI Id to use for the instance
     Type: String
-  EC2KeyPairNameParameter:
-    Default:  /CloudFormation/DevTestSSHKey
-    Description:  The SSH KeyPair to use when creating the Integration WebServer
-    Type: AWS::SSM::Parameter::Value<String>
-  ImageColourSwapAddressParameter:
-    Default:  ics.integration.michaelkillingbeck.com
-    Description:  The address of the Image Colour Swap Site
+  InstanceProfileParameter:
+    Description:  The name of the IAM role the EC2 Instance should user
     Type: String
   InstanceTypeParameter:
     Default:  t2.micro
     Description: The type of instance to create
     Type: String
-  IntegrationHostedZoneId:
-    Default:  /CloudFormation/Integration/IntegrationHostedZoneId
-    Description:  The ID of the Route53 Hosted Zone to add the DNS A-Type records to
-    Type: AWS::SSM::Parameter::Value<String>
-  VpcParameter:
-    Description: The Id of the VPC to create the resources in
-    Type: String
 Resources:
-  IntegrationSubnet:
+  IntegrationVPC:
     Properties:
-      CidrBlock:  172.31.48.0/20
-      MapPublicIpOnLaunch: True
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: 'false'
+      EnableDnsSupport: 'false'
+      InstanceTenancy: 'default'
       Tags:
+        - 
+          Key: Name
+          Value: Int-VPC
+        -
+          Key: Environment
+          Value: Integration
+    Type: AWS::EC2::VPC
+  IntegrationInternetGateway:
+    Properties:
+      Tags:
+        -
+          Key: Name
+          Value:  Int-InternetGateway
         -
           Key:  Environment
           Value:  Integration
-      VpcId:  !Ref VpcParameter
-    Type: 'AWS::EC2::Subnet'
+    Type: AWS::EC2::InternetGateway
   IntegrationSecurityGroup:
     Properties:
       GroupDescription:  Group to allow HTTP and SSH access
@@ -50,22 +52,57 @@ Resources:
           CidrIp: 0.0.0.0/0
           FromPort: 443
           ToPort: 443
-      VpcId:  !Ref VpcParameter
+      VpcId:  !Ref IntegrationVPC
     Type: AWS::EC2::SecurityGroup
+  IntegrationSubnet:
+    DependsOn: IntegrationVPC
+    Properties:
+      CidrBlock:  10.0.0.0/16
+      MapPublicIpOnLaunch: True
+      Tags:
+        -
+          Key:  Environment
+          Value:  Integration
+      VpcId:  !Ref IntegrationVPC
+    Type: 'AWS::EC2::Subnet'
+  IntegrationVPCGatewayAttachment:
+    Properties:
+      InternetGatewayId: !Ref IntegrationInternetGateway
+      VpcId:  !Ref IntegrationVPC
+    Type: AWS::EC2::VPCGatewayAttachment
+  IntegrationVPCRouteTable:
+    Properties:
+      Tags:
+        -
+          Key:  Environment
+          Value:  Integration
+        -
+          Key:  Name
+          Value:  IntegrationVPCRouteTable
+      VpcId:  !Ref IntegrationVPC
+    Type: AWS::EC2::RouteTable
+  IntegrationInternetGatewayRoute:
+    DependsOn: IntegrationInternetGateway
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref IntegrationInternetGateway
+      RouteTableId: !Ref IntegrationVPCRouteTable
+    Type: AWS::EC2::Route
+  IntegrationSubnetRouteTableAssociation:
+    Properties:
+      SubnetId: !Ref IntegrationSubnet
+      RouteTableId: !Ref IntegrationVPCRouteTable
+    Type: AWS::EC2::SubnetRouteTableAssociation
   WebServer:
-    CreationPolicy:
-      ResourceSignal:
-        Timeout:  PT5M
     Properties:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
             VolumeSize: 8
             VolumeType: gp2
-      IamInstanceProfile: EC2-CodeDeploy-InstanceProfile
+      IamInstanceProfile: !Ref InstanceProfileParameter
       InstanceType: !Ref InstanceTypeParameter
       ImageId: !Ref AmiParameter
-      KeyName: !Ref EC2KeyPairNameParameter
       SecurityGroupIds: 
         - !Ref IntegrationSecurityGroup
       SubnetId: !Ref IntegrationSubnet
@@ -76,42 +113,7 @@ Resources:
         - 
           Key:  Name  
           Value: IntegrationWebServer
-      UserData:
-        Fn::Base64: |
-          #!/bin/bash
-          sudo yum update -y
-          sudo amazon-linux-extras install nginx1
-          sudo service nginx start
-          sudo yum install ruby -y
-          sudo yum install wget
-          echo $HOME
-          sudo mkdir /home/cfn-install
-          cd /home/cfn-install
-          sudo wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
-          sudo chmod +x ./install
-          sudo ./install auto
-          sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
-          sudo yum install aspnetcore-runtime-6.0 -y
-          sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-          sudo yum install -y certbot python-certbot-nginx
-          sudo wget https://dot.net/v1/dotnet-install.sh >> output.txt
-          sudo chmod +x ./dotnet-install.sh >> output.txt
-          sudo ./dotnet-install.sh >> output.txt
-          sudo yum install dotnet-sdk-6.0 -y
-          export PATH=/home/ec2-user/.dotnet:$PATH
-          export DOTNET_CLI_HOME=/tmp/
-          /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
-  ATypeRecordsForImageColourSwap:
-    DependsOn:
-      - WebServer
-    Properties:
-      HostedZoneId: !Ref IntegrationHostedZoneId
-      Name: !Ref ImageColourSwapAddressParameter
-      ResourceRecords:  [!GetAtt WebServer.PublicIp]
-      TTL:  900
-      Type: A
-    Type: AWS::Route53::RecordSet
 Outputs:
   PublicIp:
     Description: Server's PublicIp Address
