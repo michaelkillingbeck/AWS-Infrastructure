@@ -176,10 +176,10 @@ Resources:
   #         /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
   #   Type: AWS::EC2::Instance
 
-Outputs:
-  PublicIp:
-    Description: Server's PublicIp Address
-    Value:
-      Fn::GetAtt:
-        - WebServer
-        - PublicIp
+# Outputs:
+#   PublicIp:
+#     Description: Server's PublicIp Address
+#     Value:
+#       Fn::GetAtt:
+#         - WebServer
+#         - PublicIp
