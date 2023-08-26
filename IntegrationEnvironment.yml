@@ -133,7 +133,7 @@ Resources:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
-            VolumeSize: 16
+            VolumeSize: 8
             VolumeType: gp2
       IamInstanceProfile: !Ref InstanceProfileParameter
       InstanceType: !Ref InstanceTypeParameter
@@ -153,9 +153,9 @@ Resources:
       #   Fn::Base64: |
       #     #!/bin/bash
       #     sudo yum update -y
-      #     sudo apt install python3 python3-venv libaugeas0 -y
+      #     sudo apt install python3 python3-venv libaugeas0 -y xxx
       #     sudo dnf install python3 augeas-libs -y
-      #     sudo install nginx1 -y
+      #     sudo yum install nginx -y
       #     sudo service nginx start
       #     sudo yum install ruby -y
       #     sudo yum install wget -y
