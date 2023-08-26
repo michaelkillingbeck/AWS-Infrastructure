@@ -71,20 +71,20 @@ Resources:
   #     # VpcId:  !Ref VPC
   #   Type: AWS::EC2::SecurityGroup
 
-  # Subnet:
-  #   DependsOn: VPC
-  #   Properties:
-  #     CidrBlock:  10.0.0.0/16
-  #     MapPublicIpOnLaunch: True
-  #     Tags:
-  #       -
-  #         Key:  Environment
-  #         Value:  Integration
-  #       -
-  #         Key: Name
-  #         Value:  Subnet
-  #     VpcId:  !Ref VPC
-  #   Type: 'AWS::EC2::Subnet'
+  Subnet:
+    DependsOn: VPC
+    Properties:
+      CidrBlock:  10.0.0.0/16
+      MapPublicIpOnLaunch: True
+      Tags:
+        -
+          Key:  Environment
+          Value:  Integration
+        -
+          Key: Name
+          Value:  Subnet
+      VpcId:  !Ref VPC
+    Type: 'AWS::EC2::Subnet'
 
   # SubnetRouteTableAssociation:
   #   Properties:
