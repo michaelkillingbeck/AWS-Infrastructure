@@ -86,11 +86,11 @@ Resources:
       VpcId:  !Ref VPC
     Type: 'AWS::EC2::Subnet'
 
-  # SubnetRouteTableAssociation:
-  #   Properties:
-  #     SubnetId: !Ref Subnet
-  #     RouteTableId: !Ref VPCRouteTable
-  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  SubnetRouteTableAssociation:
+    Properties:
+      SubnetId: !Ref Subnet
+      RouteTableId: !Ref VPCRouteTable
+    Type: AWS::EC2::SubnetRouteTableAssociation
 
   VPC:
     Properties:
