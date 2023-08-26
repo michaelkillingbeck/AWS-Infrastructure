@@ -33,17 +33,17 @@ Resources:
       RouteTableId: !Ref VPCRouteTable
     Type: AWS::EC2::Route
 
-  # KeyPair:
-  #   Properties:
-  #     KeyName:  IntegrationWebServerKeyPair
-  #     Tags:
-  #       -
-  #         Key:  Environment
-  #         Value:  Integration
-  #       -
-  #         Key: Name
-  #         Value:  WebServerKeyPair
-  #   Type: AWS::EC2::KeyPair
+  KeyPair:
+    Properties:
+      KeyName:  IntegrationWebServerKeyPair
+      Tags:
+        -
+          Key:  Environment
+          Value:  Integration
+        -
+          Key: Name
+          Value:  WebServerKeyPair
+    Type: AWS::EC2::KeyPair
 
   # SecurityGroup:
   #   Properties:
