@@ -113,17 +113,17 @@ Resources:
   #     VpcId:  !Ref VPC
   #   Type: AWS::EC2::VPCGatewayAttachment
     
-  # VPCRouteTable:
-  #   Properties:
-  #     Tags:
-  #       -
-  #         Key:  Environment
-  #         Value:  Integration
-  #       -
-  #         Key:  Name
-  #         Value:  VPCRouteTable
-  #     VpcId:  !Ref VPC
-  #   Type: AWS::EC2::RouteTable
+  VPCRouteTable:
+    Properties:
+      Tags:
+        -
+          Key:  Environment
+          Value:  Integration
+        -
+          Key:  Name
+          Value:  VPCRouteTable
+      VpcId:  !Ref VPC
+    Type: AWS::EC2::RouteTable
 
   # WebServer:
   #   CreationPolicy:
