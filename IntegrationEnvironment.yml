@@ -25,13 +25,13 @@ Resources:
           Value:  InternetGateway
     Type: AWS::EC2::InternetGateway
 
-  InternetGatewayRoute:
-    DependsOn: InternetGateway
-    Properties:
-      DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref InternetGateway
-      RouteTableId: !Ref VPCRouteTable
-    Type: AWS::EC2::Route
+  # InternetGatewayRoute:
+  #   DependsOn: InternetGateway
+  #   Properties:
+  #     DestinationCidrBlock: 0.0.0.0/0
+  #     GatewayId: !Ref InternetGateway
+  #     RouteTableId: !Ref VPCRouteTable
+  #   Type: AWS::EC2::Route
 
   KeyPair:
     Properties:
