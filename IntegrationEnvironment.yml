@@ -2,14 +2,14 @@ AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
   AmiParameter:
-    Default:  ami-034ef92d9dd822b08
+    Default:  ami-062ec2beae7c79c8e
     Description: The AMI Id to use for the instance
     Type: String
   InstanceProfileParameter:
     Description:  The name of the IAM role the EC2 Instance should user
     Type: String
   InstanceTypeParameter:
-    Default:  t2.micro
+    Default:  t4g.nano
     Description: The type of instance to create
     Type: String
 
