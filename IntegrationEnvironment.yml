@@ -72,7 +72,7 @@ Resources:
   #   Type: AWS::EC2::SecurityGroup
 
   Subnet:
-    # DependsOn: VPC
+    DependsOn: VPC
     Properties:
       CidrBlock:  10.0.0.0/16
       MapPublicIpOnLaunch: True
@@ -83,7 +83,7 @@ Resources:
         -
           Key: Name
           Value:  Subnet
-      # VpcId:  !Ref VPC
+      VpcId:  !Ref VPC
     Type: 'AWS::EC2::Subnet'
 
   # SubnetRouteTableAssociation:
@@ -92,20 +92,20 @@ Resources:
   #     RouteTableId: !Ref VPCRouteTable
   #   Type: AWS::EC2::SubnetRouteTableAssociation
 
-  # VPC:
-  #   Properties:
-  #     CidrBlock: 10.0.0.0/16
-  #     EnableDnsHostnames: 'true'
-  #     EnableDnsSupport: 'true'
-  #     InstanceTenancy: 'default'
-  #     Tags:
-  #       -
-  #         Key: Environment
-  #         Value: Integration
-  #       - 
-  #         Key: Name
-  #         Value: VPC
-  #   Type: AWS::EC2::VPC
+  VPC:
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: 'true'
+      EnableDnsSupport: 'true'
+      InstanceTenancy: 'default'
+      Tags:
+        -
+          Key: Environment
+          Value: Integration
+        - 
+          Key: Name
+          Value: VPC
+    Type: AWS::EC2::VPC
   
   # VPCGatewayAttachment:
   #   Properties:
