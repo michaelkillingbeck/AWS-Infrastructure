@@ -149,31 +149,31 @@ Resources:
         - 
           Key:  Name  
           Value: IntegrationWebServer
-      UserData:
-        Fn::Base64: |
-          #!/bin/bash
-          sudo yum update -y
-          sudo amazon-linux-extras install nginx1 -y
-          sudo service nginx start
-          sudo yum install ruby -y
-          sudo yum install wget
-          sudo mkdir /home/cfn-install
-          cd /home/cfn-install
-          sudo wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
-          sudo chmod +x ./install
-          sudo ./install auto
-          sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
-          sudo yum install aspnetcore-runtime-6.0 -y
-          sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-          sudo yum install -y certbot python-certbot-nginx
-          cd ~
-          sudo wget https://dot.net/v1/dotnet-install.sh >> output.txt
-          sudo chmod +x ./dotnet-install.sh >> output.txt
-          sudo ./dotnet-install.sh >> output.txt
-          sudo yum install dotnet-sdk-6.0 -y
-          export PATH=/home/ec2-user/.dotnet:$PATH
-          export DOTNET_CLI_HOME=/tmp/
-          /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
+      # UserData:
+      #   Fn::Base64: |
+      #     #!/bin/bash
+      #     sudo yum update -y
+      #     sudo amazon-linux-extras install nginx1 -y
+      #     sudo service nginx start
+      #     sudo yum install ruby -y
+      #     sudo yum install wget
+      #     sudo mkdir /home/cfn-install
+      #     cd /home/cfn-install
+      #     sudo wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
+      #     sudo chmod +x ./install
+      #     sudo ./install auto
+      #     sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
+      #     sudo yum install aspnetcore-runtime-6.0 -y
+      #     sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+      #     sudo yum install -y certbot python-certbot-nginx
+      #     cd ~
+      #     sudo wget https://dot.net/v1/dotnet-install.sh >> output.txt
+      #     sudo chmod +x ./dotnet-install.sh >> output.txt
+      #     sudo ./dotnet-install.sh >> output.txt
+      #     sudo yum install dotnet-sdk-6.0 -y
+      #     export PATH=/home/ec2-user/.dotnet:$PATH
+      #     export DOTNET_CLI_HOME=/tmp/
+      #     /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
 
 Outputs:
