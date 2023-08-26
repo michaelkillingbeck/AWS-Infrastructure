@@ -92,20 +92,20 @@ Resources:
   #     RouteTableId: !Ref VPCRouteTable
   #   Type: AWS::EC2::SubnetRouteTableAssociation
 
-  VPC:
-    Properties:
-      CidrBlock: 10.0.0.0/16
-      EnableDnsHostnames: 'true'
-      EnableDnsSupport: 'true'
-      InstanceTenancy: 'default'
-      Tags:
-        -
-          Key: Environment
-          Value: Integration
-        - 
-          Key: Name
-          Value: VPC
-    Type: AWS::EC2::VPC
+  # VPC:
+  #   Properties:
+  #     CidrBlock: 10.0.0.0/16
+  #     EnableDnsHostnames: 'true'
+  #     EnableDnsSupport: 'true'
+  #     InstanceTenancy: 'default'
+  #     Tags:
+  #       -
+  #         Key: Environment
+  #         Value: Integration
+  #       - 
+  #         Key: Name
+  #         Value: VPC
+  #   Type: AWS::EC2::VPC
   
   # VPCGatewayAttachment:
   #   Properties:
@@ -113,17 +113,17 @@ Resources:
   #     VpcId:  !Ref VPC
   #   Type: AWS::EC2::VPCGatewayAttachment
     
-  VPCRouteTable:
-    Properties:
-      Tags:
-        -
-          Key:  Environment
-          Value:  Integration
-        -
-          Key:  Name
-          Value:  VPCRouteTable
-      VpcId:  !Ref VPC
-    Type: AWS::EC2::RouteTable
+  # VPCRouteTable:
+  #   Properties:
+  #     Tags:
+  #       -
+  #         Key:  Environment
+  #         Value:  Integration
+  #       -
+  #         Key:  Name
+  #         Value:  VPCRouteTable
+  #     VpcId:  !Ref VPC
+  #   Type: AWS::EC2::RouteTable
 
   # WebServer:
   #   CreationPolicy:
