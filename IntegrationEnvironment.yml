@@ -14,16 +14,16 @@ Parameters:
     Type: String
 
 Resources:
-  # InternetGateway:
-  #   Properties:
-  #     Tags:
-  #       -
-  #         Key:  Environment
-  #         Value:  Integration
-  #       -
-  #         Key: Name
-  #         Value:  InternetGateway
-  #   Type: AWS::EC2::InternetGateway
+  InternetGateway:
+    Properties:
+      Tags:
+        -
+          Key:  Environment
+          Value:  Integration
+        -
+          Key: Name
+          Value:  InternetGateway
+    Type: AWS::EC2::InternetGateway
 
   # InternetGatewayRoute:
   #   DependsOn: InternetGateway
