@@ -107,11 +107,11 @@ Resources:
           Value: VPC
     Type: AWS::EC2::VPC
   
-  # VPCGatewayAttachment:
-  #   Properties:
-  #     InternetGatewayId: !Ref InternetGateway
-  #     VpcId:  !Ref VPC
-  #   Type: AWS::EC2::VPCGatewayAttachment
+  VPCGatewayAttachment:
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId:  !Ref VPC
+    Type: AWS::EC2::VPCGatewayAttachment
     
   VPCRouteTable:
     Properties:
