@@ -45,31 +45,31 @@ Resources:
           Value:  WebServerKeyPair
     Type: AWS::EC2::KeyPair
 
-  SecurityGroup:
-    Properties:
-      GroupDescription:  Group to allow HTTP and SSH access
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/0
-          FromPort: 22
-          ToPort: 22
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/0
-          FromPort: 80
-          ToPort: 80
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/0
-          FromPort: 443
-          ToPort: 443
-      Tags:
-        -
-          Key:  Environment
-          Value:  Integration
-        -
-          Key: Name
-          Value:  SecurityGroup
-      # VpcId:  !Ref VPC
-    Type: AWS::EC2::SecurityGroup
+  # SecurityGroup:
+  #   Properties:
+  #     GroupDescription:  Group to allow HTTP and SSH access
+  #     SecurityGroupIngress:
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/0
+  #         FromPort: 22
+  #         ToPort: 22
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/0
+  #         FromPort: 80
+  #         ToPort: 80
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/0
+  #         FromPort: 443
+  #         ToPort: 443
+  #     Tags:
+  #       -
+  #         Key:  Environment
+  #         Value:  Integration
+  #       -
+  #         Key: Name
+  #         Value:  SecurityGroup
+  #     # VpcId:  !Ref VPC
+  #   Type: AWS::EC2::SecurityGroup
 
   Subnet:
     # DependsOn: VPC
