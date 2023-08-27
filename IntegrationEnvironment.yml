@@ -171,6 +171,7 @@ Resources:
           cd ~
           sudo wget https://dot.net/v1/dotnet-install.sh >> output.txt
           sudo chmod +x ./dotnet-install.sh >> output.txt
+          sudo yum install dotnet-runtime-6.0 -y
           sudo yum install dotnet-sdk-6.0 -y
           export PATH=/home/ec2-user/.dotnet:$PATH
           export DOTNET_CLI_HOME=/tmp/
