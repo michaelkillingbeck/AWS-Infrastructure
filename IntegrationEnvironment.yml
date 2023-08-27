@@ -126,9 +126,9 @@ Resources:
     Type: AWS::EC2::RouteTable
 
   WebServer:
-    # CreationPolicy:
-    #   ResourceSignal:
-    #     Timeout:  PT10M
+    CreationPolicy:
+      ResourceSignal:
+        Timeout:  PT10M
     Properties:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
@@ -149,33 +149,33 @@ Resources:
         - 
           Key:  Name  
           Value: IntegrationWebServer
-      # UserData:
-      #   Fn::Base64: |
-      #     #!/bin/bash
-      #     sudo yum update -y
-      #     sudo dnf install python3 augeas-libs -y
-      #     sudo yum install nginx -y
-      #     sudo service nginx start
-      #     sudo yum install ruby -y
-      #     sudo yum install wget -y
-      #     sudo mkdir /home/cfn-install
-      #     cd /home/cfn-install
-      #     sudo wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
-      #     sudo chmod +x ./install
-      #     sudo ./install auto
-      #     sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
-      #     sudo yum install aspnetcore-runtime-6.0 -y
-      #     sudo python3 -m venv /opt/certbot/
-      #     sudo /opt/certbot/bin/pip install --upgrade pip
-      #     sudo /opt/certbot/bin/pip install certbot certbot-nginx
-      #     cd ~
-      #     sudo wget https://dot.net/v1/dotnet-install.sh >> output.txt
-      #     sudo chmod +x ./dotnet-install.sh >> output.txt
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          sudo yum update -y
+          sudo dnf install python3 augeas-libs -y
+          sudo yum install nginx -y
+          sudo service nginx start
+          sudo yum install ruby -y
+          sudo yum install wget -y
+          sudo mkdir /home/cfn-install
+          cd /home/cfn-install
+          sudo wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
+          sudo chmod +x ./install
+          sudo ./install auto
+          sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
+          sudo yum install aspnetcore-runtime-6.0 -y
+          sudo python3 -m venv /opt/certbot/
+          sudo /opt/certbot/bin/pip install --upgrade pip
+          sudo /opt/certbot/bin/pip install certbot certbot-nginx
+          cd ~
+          sudo wget https://dot.net/v1/dotnet-install.sh >> output.txt
+          sudo chmod +x ./dotnet-install.sh >> output.txt
       #     sudo ./dotnet-install.sh >> output.txt
-      #     sudo yum install dotnet-sdk-6.0 -y
-      #     export PATH=/home/ec2-user/.dotnet:$PATH
-      #     export DOTNET_CLI_HOME=/tmp/
-      #     /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
+          sudo yum install dotnet-sdk-6.0 -y
+          export PATH=/home/ec2-user/.dotnet:$PATH
+          export DOTNET_CLI_HOME=/tmp/
+          /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
 
 Outputs:
