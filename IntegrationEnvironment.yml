@@ -126,9 +126,9 @@ Resources:
     Type: AWS::EC2::RouteTable
 
   WebServer:
-    CreationPolicy:
-      ResourceSignal:
-        Timeout:  PT10M
+    # CreationPolicy:
+    #   ResourceSignal:
+    #     Timeout:  PT10M
     Properties:
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
