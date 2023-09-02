@@ -1,0 +1,30 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "cloudwatch:StartMetricStreams",
+                "codeartifact:GetRepositoryEndpoint",
+                "codeartifact:GetAuthorizationToken",
+                "codeartifact:ReadFromRepository",
+                "codeartifact:PublishPackageVersion"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "sts:GetServiceBearerToken",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "sts:AWSServiceName": "codeartifact.amazonaws.com"
+                }
+            }
+        }
+    ]
+}
