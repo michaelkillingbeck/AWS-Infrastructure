@@ -185,9 +185,13 @@ Resources:
     Type: AWS::Route53::HostedZone
 
   IntegrationHostedZoneRecordSet:
+    DependsOn: IntegrationHostedZone
     Properties:
       HostedZoneName: michaelkillingbeck.com.
-      ResourceRecords:  !Join [',', !GetAtt IntegrationHostedZone.NameServers]
+      Name: inegration.michaelkillingbeck.com
+      ResourceRecords:  !GetAtt IntegrationHostedZone.NameServers
+      TTL: '900'
+      Type: NS
     Type: AWS::Route53::RecordSet
 
 Outputs:
