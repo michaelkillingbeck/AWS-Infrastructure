@@ -179,6 +179,20 @@ Resources:
           /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
     Type: AWS::EC2::Instance
 
+  IntegrationHostedZone:
+    Properties:
+      Name: integration.michaelkillingbeck.com
+    Type: AWS::Route53::HostedZone
+
+  IntegrationHostedZoneRecordSet:
+    Properties:
+      HostedZoneName: michaelkillingbeck.com.
+      ResourceRecords:
+        Fn::GetAtt:
+          - IntegrationHostedZone
+          - NameServers
+    Type: AWS::Route53::RecordSet
+
 Outputs:
   PublicIp:
     Description: Server's PublicIp Address
