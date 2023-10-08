@@ -187,10 +187,7 @@ Resources:
   IntegrationHostedZoneRecordSet:
     Properties:
       HostedZoneName: michaelkillingbeck.com.
-      ResourceRecords:
-        Fn::GetAtt:
-          - IntegrationHostedZone
-          - NameServers
+      ResourceRecords:  !Join [',', !GetAtt IntegrationHostedZone.NameServers]
     Type: AWS::Route53::RecordSet
 
 Outputs:
