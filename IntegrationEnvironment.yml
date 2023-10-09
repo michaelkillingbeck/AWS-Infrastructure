@@ -188,7 +188,7 @@ Resources:
     DependsOn: IntegrationHostedZone
     Properties:
       HostedZoneName: michaelkillingbeck.com.
-      Name: inegration.michaelkillingbeck.com
+      Name: integration.michaelkillingbeck.com
       ResourceRecords:  !GetAtt IntegrationHostedZone.NameServers
       TTL: '900'
       Type: NS
