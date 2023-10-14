@@ -126,7 +126,6 @@ Resources:
       IamInstanceProfile: !Ref InstanceProfileParameter
       InstanceType: !Ref InstanceTypeParameter
       ImageId: !Ref AmiParameter
-      KeyName:  !Ref KeyPair
       SecurityGroupIds: 
         - !Ref SecurityGroup
       SubnetId: !Ref Subnet
