@@ -183,7 +183,7 @@ Resources:
 
   WebServerIPAddressParameter:
     Properties:
-      Name: General/IntegrationServer/IPAddress
+      Name: /General/IntegrationServer/IPAddress
       Type: String
       Value: !GetAtt WebServer.PublicIp
     Type: AWS::SSM::Parameter
