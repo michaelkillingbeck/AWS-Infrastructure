@@ -1,0 +1,14 @@
+{
+    "Comment": "Deleting record for ICS during Integration rebuild",
+    "Changes": [{
+        "Action": "DELETE",
+            "ResourceRecordSet": {
+            "Name": "ics.integration.michaelkillingbeck.com",
+            "Type": "A",
+            "TTL": 300,
+            "ResourceRecords": [{ 
+                "Value": "null"
+            }]
+        }
+    }]
+}

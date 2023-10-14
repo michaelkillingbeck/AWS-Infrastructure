@@ -194,6 +194,17 @@ Resources:
       Type: NS
     Type: AWS::Route53::RecordSet
 
+  WebServerIPAddressParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: General/IntegrationServer/IPAddress
+      Type: String
+      Value: !GetAtt WebServer.PublicIp
+      Tags:
+        - 
+          Key:  Environment  
+          Value: Integration
+
 Outputs:
   PublicIp:
     Description: Server's PublicIp Address
