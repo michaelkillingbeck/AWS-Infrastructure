@@ -7,6 +7,8 @@ env:
 phases:
   build:
     commands:
+      - echo INTEGRATION_SERVER_IP_ADDRESS
+      - echo $INTEGRATION_SERVER_IP_ADDRESS
       - echo $(jq --arg output "$INTEGRATION_SERVER_IP_ADDRESS" '.Changes[0].ResourceRecordSet.ResourceRecords[0].Value = $INTEGRATION_SERVER_IP_ADDRESS' ics-integration-hosted-zone-record.json) > ics-integration-hosted-zone-record.json
       - hostedZoneID=$(aws route53 list-hosted-zones-by-name |  jq --arg name "integration.michaelkillingbeck.com." -r '.HostedZones | .[] | select(.Name=="\($name)") | .Id')
       - aws route53 change-resource-record-sets
