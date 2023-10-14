@@ -33,18 +33,6 @@ Resources:
       RouteTableId: !Ref VPCRouteTable
     Type: AWS::EC2::Route
 
-  KeyPair:
-    Properties:
-      KeyName:  IntegrationWebServerKeyPair
-      Tags:
-        -
-          Key:  Environment
-          Value:  Integration
-        -
-          Key: Name
-          Value:  WebServerKeyPair
-    Type: AWS::EC2::KeyPair
-
   SecurityGroup:
     Properties:
       GroupDescription:  Group to allow HTTP and SSH access
@@ -195,15 +183,11 @@ Resources:
     Type: AWS::Route53::RecordSet
 
   WebServerIPAddressParameter:
-    Type: AWS::SSM::Parameter
     Properties:
       Name: General/IntegrationServer/IPAddress
       Type: String
       Value: !GetAtt WebServer.PublicIp
-      Tags:
-        - 
-          Key:  Environment  
-          Value: Integration
+    Type: AWS::SSM::Parameter
 
 Outputs:
   PublicIp:
