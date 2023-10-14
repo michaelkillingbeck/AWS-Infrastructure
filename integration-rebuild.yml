@@ -4,7 +4,7 @@ phases:
   build:
     commands:
       - INTEGRATION_SERVER_IP_ADDRESS=$(aws ssm get-parameter --name "/General/IntegrationServer/IPAddress" --query "Parameter.Value" --output text)
-      - echo $INTEGRATION_SERVER_IP_ADDRESS
+      - ls
       - echo $(jq --arg output "$INTEGRATION_SERVER_IP_ADDRESS" '.Changes[0].ResourceRecordSet.ResourceRecords[0].Value = $INTEGRATION_SERVER_IP_ADDRESS' ics-integration-hosted-zone-record.json) > ics-integration-hosted-zone-record.json
       - hostedZoneID=$(aws route53 list-hosted-zones-by-name |  jq --arg name "integration.michaelkillingbeck.com." -r '.HostedZones | .[] | select(.Name=="\($name)") | .Id')
       - aws route53 change-resource-record-sets
