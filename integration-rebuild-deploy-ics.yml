@@ -1,0 +1,9 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - source_version=$(aws s3api list-objects --bucket imagecolourswap --prefix ImageColourSwapWeb/ --query 'sort_by(Contents, &LastModified)[-1].Key' --output text)
+      - deployment_id=$(aws deploy create-deployment --application-name ImageColourSwapWeb --deployment-group Integration --s3-location bucket=imagecolourswap,bundleType=zip,key=ImageColourSwapWeb/$source_version --query deploymentId | tr -d '"')
+      - echo $deployment_id
+      - aws wait deployment successful --deployment-id $deployment_id
