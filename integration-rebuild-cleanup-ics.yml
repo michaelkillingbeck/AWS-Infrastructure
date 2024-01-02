@@ -18,11 +18,11 @@ phases:
       - 'hostedZoneID=$(
           aws route53 list-hosted-zones-by-name | 
             jq 
-              --arg name "integration.michaelkillingbeck.com." 
-              -r ".HostedZones 
+              --arg name "integration.michaelkillingbeck.com."
+              -r ''.HostedZones 
               | .[] 
               | select(.Name=="\($name)") 
-              | .Id"
+              | .Id''
           )'
       - aws route53 change-resource-record-sets
         --hosted-zone-id $hostedZoneID
