@@ -3,8 +3,8 @@ version: 0.2
 phases:
   build:
     commands:
-      - 'INTEGRATION_SERVER_IP_ADDRESS=
-          $(aws ssm get-parameter 
+      - 'INTEGRATION_SERVER_IP_ADDRESS=$(
+            aws ssm get-parameter 
             --name "/General/IntegrationServer/IPAddress" 
             --query "Parameter.Value" 
             --output text)'
