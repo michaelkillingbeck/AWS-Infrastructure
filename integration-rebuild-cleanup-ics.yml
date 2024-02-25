@@ -9,11 +9,7 @@ phases:
             --query "Parameter.Value" 
             --output text)'
       - ls
-      - $(jq 
-          --arg IP_ADDRESS "$INTEGRATION_SERVER_IP_ADDRESS" 
-          '.Changes[0].ResourceRecordSet.ResourceRecords[0].Value = $IP_ADDRESS' 
-          ics-integration-hosted-zone-record.json
-        ) > ics-integration-hosted-zone-record.json
+      - $(jq --arg IP_ADDRESS "$INTEGRATION_SERVER_IP_ADDRESS" '.Changes[0].ResourceRecordSet.ResourceRecords[0].Value = $IP_ADDRESS' ics-integration-hosted-zone-record.json) > ics-integration-hosted-zone-record.json
       - 'hostedZoneID=$(
           aws route53 list-hosted-zones-by-name | 
             jq 
