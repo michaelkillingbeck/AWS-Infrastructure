@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
   AmiParameter:
-    Default:  ami-00d31563030defb0d
+    Default:  ami-0e58172bedd62916b
     Description: The AMI Id to use for the instance
     Type: String
   InstanceProfileParameter:

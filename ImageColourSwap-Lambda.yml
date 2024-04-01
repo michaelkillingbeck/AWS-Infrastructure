@@ -4,30 +4,34 @@ Resources:
   ICSProcessingFunction:
     Properties:
       Code:
-        S3Bucket: artifactstore-mk-test
-        S3Key:  ImageColourSwapLambda
+        S3Bucket: imagecolourswap
+        S3Key:  ImageColourSwapLambda/Lambda.zip
       Handler:  Lambda::ImageColourSwap.Lambda.Program::Handler
       MemorySize: 512
-      Role: arn:aws:iam::267855555195:role/service-role/CodePipelineUpdateLambda-role-hty0oci1
+      Role: arn:aws:iam::267855555195:role/ImageColourSwap-Lambda
       Runtime:  dotnet6
       Timeout:  30
     Type: AWS::Lambda::Function
+
   ICSLambdaPermission:
     Properties:
       Action: 'lambda:InvokeFunction'
       FunctionName: !Ref ICSProcessingFunction
       Principal:  'apigateway.amazonaws.com'
     Type: 'AWS::Lambda::Permission'
+
   ImageColourSwapAPI:
     Properties:
       Name: ImageColourSwap
     Type: 'AWS::ApiGateway::RestApi'
+
   Resource:
     Properties:
       ParentId: !GetAtt ImageColourSwapAPI.RootResourceId
       PathPart: ics
       RestApiId:  !Ref ImageColourSwapAPI
     Type: 'AWS::ApiGateway::Resource'
+
   GetMethod:
     Properties:
       AuthorizationType:  NONE
@@ -53,13 +57,15 @@ Resources:
       }
       ResourceId: !GetAtt ImageColourSwapAPI.RootResourceId
       RestApiId:  !Ref ImageColourSwapAPI
-    Type: 'AWS::ApiGateway::Method' 
+    Type: 'AWS::ApiGateway::Method'
+
   DemoLambdaInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt ICSProcessingFunction.Arn
       Action: "lambda:InvokeFunction"
       Principal: apigateway.amazonaws.com
+
   ApiDeployment:
     DependsOn:  GetMethod
     Properties:
@@ -67,6 +73,7 @@ Resources:
       RestApiId:  !Ref ImageColourSwapAPI
       StageName:  Integration
     Type: 'AWS::ApiGateway::Deployment'
+
   LambdaParameter:
     DependsOn:  ApiDeployment
     Properties:
