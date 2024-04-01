@@ -9,7 +9,7 @@ Parameters:
     Description:  The name of the IAM role the EC2 Instance should user
     Type: String
   InstanceTypeParameter:
-    Default:  t4g.nano
+    Default:  t2.nano
     Description: The type of instance to create
     Type: String
 
