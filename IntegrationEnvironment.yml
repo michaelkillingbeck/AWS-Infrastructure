@@ -150,17 +150,14 @@ Resources:
           sudo wget https://aws-codedeploy-eu-west-2.s3.eu-west-2.amazonaws.com/latest/install
           sudo chmod +x ./install
           sudo ./install auto
-          sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
-          sudo yum install aspnetcore-runtime-6.0 -y
+          sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+          sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/37/prod.repo
+          sudo dnf install -y dotnet-sdk-8.0
           sudo python3 -m venv /opt/certbot/
           sudo /opt/certbot/bin/pip install --upgrade pip
           sudo /opt/certbot/bin/pip install certbot certbot-nginx
           sudo ln -s /opt/certbot/bin/certbot /usr/bin/certbot
           cd ~
-          sudo wget https://dot.net/v1/dotnet-install.sh >> output.txt
-          sudo chmod +x ./dotnet-install.sh >> output.txt
-          sudo yum install dotnet-runtime-6.0 -y
-          sudo yum install dotnet-sdk-6.0 -y
           export PATH=/home/ec2-user/.dotnet:$PATH
           export DOTNET_CLI_HOME=/tmp/
           /opt/aws/bin/cfn-signal -e 0 --stack Integration --resource WebServer --region eu-west-2
@@ -186,6 +183,30 @@ Resources:
       Name: /General/IntegrationServer/IPAddress
       Type: String
       Value: !GetAtt WebServer.PublicIp
+    Type: AWS::SSM::Parameter
+
+  IntegrationUserPool:
+    Properties:
+      AccountRecoverySetting: 
+        RecoveryMechanisms:
+          - Name: "verified_email"
+            Priority: 1
+      AdminCreateUserConfig: 
+        AllowAdminCreateUserOnly: true
+      Schema: 
+        - Name: email
+          Required: true
+          Mutable: true
+      UsernameConfiguration: 
+        CaseSensitive:  false
+      UserPoolName: IntegrationUserPool
+    Type: AWS::Cognito::UserPool
+
+  IntegrationUserPoolIdParameter:
+    Properties:
+      Name: /ICS/Cognito/UserPoolId
+      Type: String
+      Value: !GetAtt IntegrationUserPool.UserPoolId
     Type: AWS::SSM::Parameter
 
 Outputs:

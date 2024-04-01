@@ -1,5 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description:  Lambda function for ImageColourSwap
+
+Parameters:
+  IntegrationUserPoolId:
+    Default:  test
+    Description: The Id of the user pool for the Integration environment
+    Type: AWS::SSM::Parameter::Value<String>
+
 Resources:
   ICSProcessingFunction:
     Properties:
@@ -82,3 +89,28 @@ Resources:
       Tier: Standard
       Value: !Ref ImageColourSwapAPI
     Type: 'AWS::SSM::Parameter'
+
+  IntegrationIcsAppClient:
+    Properties:
+      ClientName: ICS
+      ExplicitAuthFlows: 
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+      GenerateSecret: true
+      PreventUserExistenceErrors: ENABLED
+      UserPoolId: !Ref IntegrationUserPoolId
+    Type: AWS::Cognito::UserPoolClient
+  
+  IntegrationIcsAppClientSecretParameter:
+    Properties:
+      Name: /ICS/Cognito/UserPoolClientSecret
+      Type: String
+      Value: !GetAtt IntegrationIcsAppClient.ClientSecret
+    Type: AWS::SSM::Parameter
+
+  IntegrationIcsAppClientIdParameter:
+    Properties:
+      Name: /ICS/Cognito/UserPoolClientid
+      Type: String
+      Value: !GetAtt IntegrationIcsAppClient.ClientId
+    Type: AWS::SSM::Parameter
