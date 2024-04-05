@@ -6,3 +6,8 @@ phases:
       - source_version=$(aws s3api list-objects --bucket imagecolourswap --prefix ImageColourSwapWeb/ --query 'sort_by(Contents, &LastModified)[-1].Key' --output text)
       - deployment_id=$(aws deploy create-deployment --application-name ImageColourSwapWeb --deployment-group Integration --s3-location bucket=imagecolourswap,bundleType=zip,key=$source_version --query deploymentId | tr -d '"')
       - aws deploy wait deployment-successful --deployment-id $deployment_id
+      - userpoolid=$(aws ssm get-parameter --name "/ICS/Cognito/UserPoolId" --query "Parameter.Value" | tr -d \")
+      - username=$(aws ssm get-parameter --name "/ICS/Cognito/TestUserName" --query "Parameter.Value" | tr -d \")
+      - password=$(aws ssm get-parameter --name "/ICS/Cognito/DefaultPassword" --query "Parameter.Value" | tr -d \")
+      - aws cognito-idp admin-create-user --user-pool-id $userpoolid --username $username --message-action SUPPRESS
+      - aws cognito-idp admin-set-user-password --user-pool-id $userpoolid --username $username --password $password --permanent

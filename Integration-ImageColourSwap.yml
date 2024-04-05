@@ -3,8 +3,13 @@ Description:  Lambda function for ImageColourSwap
 
 Parameters:
   IntegrationUserPoolId:
-    Default:  test
+    Default:  /ICS/Cognito/UserPoolId
     Description: The Id of the user pool for the Integration environment
+    Type: AWS::SSM::Parameter::Value<String>
+  
+  ICSBucketName:
+    Default:  /ICS/Settings/BucketName
+    Description: The name of the S3 Bucket to save images in
     Type: AWS::SSM::Parameter::Value<String>
 
 Resources:
@@ -13,7 +18,11 @@ Resources:
       Code:
         S3Bucket: imagecolourswap
         S3Key:  ImageColourSwapLambda/Lambda.zip
-      Handler:  Lambda::ImageColourSwap.Lambda.Program::Handler
+      Environment:
+        Variables:
+          BucketName: !Ref ICSBucketName
+      FunctionName: Integration-ICSProcessingFunction
+      Handler:  ImageColourSwap.Lambda::ImageColourSwap.Lambda.Program::Handler
       MemorySize: 512
       Role: arn:aws:iam::267855555195:role/ImageColourSwap-Lambda
       Runtime:  dotnet6
