@@ -22,6 +22,17 @@ phases:
               | select(.Name=="\($name)") 
               | .Id''
           )'
-      - aws route53 change-resource-record-sets
-        --hosted-zone-id $hostedZoneID
-        --change-batch file://ics-integration-hosted-zone-record.json
+      - 'DNSARecord=$(
+          aws route53 list-resource-record-sets --hosted-zone-id $hostedZoneID | 
+          jq 
+            -r 
+            ''.ResourceRecordSets 
+            | .[] 
+            | select(.Type=="A")''
+          )'
+      - 'if [ ! -z "$ARecord" ]
+          then
+            aws route53 change-resource-record-sets
+              --hosted-zone-id $hostedZoneID
+              --change-batch file://ics-integration-hosted-zone-record.json
+        '
