@@ -30,9 +30,10 @@ phases:
             | .[] 
             | select(.Type=="A")''
           )'
-      - 'if [ ! -z "$ARecord" ]
-          then
-            aws route53 change-resource-record-sets
-              --hosted-zone-id $hostedZoneID
-              --change-batch file://ics-integration-hosted-zone-record.json
-        fi'
+      - |
+        if [ ! -z "$ARecord" ]
+        then
+          aws route53 change-resource-record-sets
+            --hosted-zone-id $hostedZoneID
+            --change-batch file://ics-integration-hosted-zone-record.json
+        fi
