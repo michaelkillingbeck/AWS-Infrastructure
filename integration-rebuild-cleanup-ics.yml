@@ -33,7 +33,7 @@ phases:
       - |
         if [ ! -z "$DNSARecord" ]
         then
-          aws route53 change-resource-record-sets
+          'aws route53 change-resource-record-sets
             --hosted-zone-id $hostedZoneID
-            --change-batch file://ics-integration-hosted-zone-record.json
+            --change-batch file://ics-integration-hosted-zone-record.json'
         fi
