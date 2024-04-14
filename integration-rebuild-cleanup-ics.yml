@@ -31,7 +31,7 @@ phases:
             | select(.Type=="A")''
           )'
       - |
-        if [ ! -z "$ARecord" ]
+        if [ ! -z "$DNSARecord" ]
         then
           aws route53 change-resource-record-sets
             --hosted-zone-id $hostedZoneID
