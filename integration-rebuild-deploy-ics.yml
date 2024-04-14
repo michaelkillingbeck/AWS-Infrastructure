@@ -8,6 +8,6 @@ phases:
       - aws deploy wait deployment-successful --deployment-id $deployment_id
       - userpoolid=$(aws ssm get-parameter --name "/ICS/Cognito/UserPoolId" --query "Parameter.Value" | tr -d \")
       - username=$(aws ssm get-parameter --name "/ICS/Cognito/TestUserName" --query "Parameter.Value" | tr -d \")
-      - password=$(aws ssm get-parameter --name "/ICS/Cognito/DefaultPassword" --query "Parameter.Value" | tr -d \")
+      - password=$(aws ssm get-parameter --name "/ICS/Cognito/DefaultPassword" --with-decryption --query "Parameter.Value" | tr -d \")
       - aws cognito-idp admin-create-user --user-pool-id $userpoolid --username $username --message-action SUPPRESS
       - aws cognito-idp admin-set-user-password --user-pool-id $userpoolid --username $username --password $password --permanent
