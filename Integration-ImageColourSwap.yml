@@ -25,7 +25,7 @@ Resources:
       Handler:  ImageColourSwap.Lambda::ImageColourSwap.Lambda.Program::Handler
       MemorySize: 512
       Role: arn:aws:iam::267855555195:role/ImageColourSwap-Lambda
-      Runtime:  dotnet6
+      Runtime:  dotnet8
       Timeout:  30
     Type: AWS::Lambda::Function
 
