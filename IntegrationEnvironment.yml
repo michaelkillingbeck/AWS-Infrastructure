@@ -38,7 +38,7 @@ Resources:
       GroupDescription:  Group to allow HTTP and SSH access
       SecurityGroupIngress:
         - IpProtocol: tcp
-          CidrIp: 0.0.0.0/0
+          CidrIp: 3.8.37.24/29
           FromPort: 22
           ToPort: 22
         - IpProtocol: tcp
