@@ -1,0 +1,48 @@
+[*.cs]
+
+dotnet_analyzer_diagnostic.category-CodeQuality.severity = warning
+dotnet_analyzer_diagnostic.category-Design.severity = warning
+dotnet_analyzer_diagnostic.category-Documentation.severity = warning
+dotnet_analyzer_diagnostic.category-Globalization.severity = warning
+dotnet_analyzer_diagnostic.category-Interoperability.severity = warning
+dotnet_analyzer_diagnostic.category-Maintainability.severity = warning
+dotnet_analyzer_diagnostic.category-Naming.severity = warning
+dotnet_analyzer_diagnostic.category-Performance.severity = warning
+dotnet_analyzer_diagnostic.category-Reliability.severity = warning
+dotnet_analyzer_diagnostic.category-Security.severity = warning
+dotnet_analyzer_diagnostic.category-SingleFile.severity = warning
+dotnet_analyzer_diagnostic.category-Style.severity = warning
+dotnet_analyzer_diagnostic.category-Usage.severity = warning
+
+#CS1591 : Missing XML comment for publicly visible type or member
+dotnet_diagnostic.CS1591.severity = None
+
+#IDE0160 : Use block-scoped namespace
+dotnet_diagnostic.IDE0160.severity = None
+
+#SA0001 : XmlCommentAnalysisDisabled
+dotnet_diagnostic.SA0001.severity = None
+
+#SA1101 : PrefixLocalCallsWithThis
+dotnet_diagnostic.SA1101.severity = None
+
+#SA1200 : UsingDirectivesMustBePlacedCorrectly
+dotnet_diagnostic.SA1200.severity = None
+
+#SA1201 : ElementsMustAppearInTheCorrectOrder
+dotnet_diagnostic.SA1201.severity = None
+
+#SA1208 : SystemUsingDirectivesMustBePlacedBeforeOtherUsingDirectives
+dotnet_diagnostic.SA1208.severity = None
+
+#SA1214 : ReadonlyElementsMustAppearBeforeNonReadonlyElements
+dotnet_diagnostic.SA1214.severity = None
+
+#SA1309 : FieldNamesMustNotBeginWithUnderscore
+dotnet_diagnostic.SA1309.severity = None
+
+#SA1600 : ElementsMustBeDocumented
+dotnet_diagnostic.SA1600.severity = None
+
+#SA1633 : FileMustHaveHeader
+dotnet_diagnostic.SA1633.severity = None

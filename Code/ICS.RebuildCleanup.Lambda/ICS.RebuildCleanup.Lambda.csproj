@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+
+    <PackageReference Include="Amazon.Lambda.Core" Version="2.2.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.2" />
+    <PackageReference Include="awssdk.route53" Version="3.7.403.27" />
+    <PackageReference Include="AWSSDK.SSO" Version="3.7.300.71" />
+    <PackageReference Include="AWSSDK.SSOOIDC" Version="3.7.301.66" />
+  
+  </ItemGroup>
+
+  <PropertyGroup>
+
+    <AnalysisMode>All</AnalysisMode>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    
+  </PropertyGroup>
+
+</Project>
