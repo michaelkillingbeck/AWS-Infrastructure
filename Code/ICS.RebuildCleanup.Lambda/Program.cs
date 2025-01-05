@@ -107,6 +107,10 @@ public static class Program
         }
 
         context.Log("No record set found, nothing to do");
+        _ = await codePipelineClient.PutJobSuccessResultAsync(new PutJobSuccessResultRequest
+        {
+            JobId = jobId,
+        }).ConfigureAwait(false);
     }
 
     private static void Log(this ILambdaContext context, string message)
