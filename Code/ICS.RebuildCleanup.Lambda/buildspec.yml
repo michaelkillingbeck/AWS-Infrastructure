@@ -13,7 +13,6 @@ phases:
 
   build:
     commands:
-      - echo $S3_BUCKET_OUTPUT
       - cd Code/ICS.RebuildCleanup.Lambda
       - rm -rf Nuget
       - mkdir Nuget
@@ -24,7 +23,7 @@ phases:
       - dotnet pack --no-restore ICS.RebuildCleanup.Lambda.csproj /p:OutputPath=Nuget -o Code/Nuget
       - cd Build
       - zip ICS.RebuildCleanup.Lambda.zip *
-      - aws s3 cp ICS.RebuildCleanup.Lambda.zip s3://aws-infrastructure-bucket/ics-integration-cleanup/
+      - aws s3 cp ICS.RebuildCleanup.Lambda.zip s3://$S3_BUCKET_OUTPUT/ics-integration-cleanup/
       
 artifacts:
   files:
