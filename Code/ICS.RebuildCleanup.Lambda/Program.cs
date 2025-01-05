@@ -17,7 +17,11 @@ public static class Program
     [LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
     public static async Task Handler(ILambdaContext context)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        context.Log("Starting execution");
+
         using AmazonRoute53Client route53Client = new(RegionEndpoint.EUWest2);
+        context.Log("Route53 client created");
 
         ListHostedZonesByNameResponse response = await route53Client.ListHostedZonesByNameAsync(new ListHostedZonesByNameRequest
         {
@@ -29,10 +33,12 @@ public static class Program
 
         if (hostedZone != null)
         {
+            context.Log("Found hosted zone");
             hostedZoneId = hostedZone.Id;
         }
         else
         {
+            context.Log("No hosted zone found, stopping execution");
             return;
         }
 
@@ -43,43 +49,56 @@ public static class Program
 
         ResourceRecordSet? recordSet = resourceRecordSets.ResourceRecordSets.Find(recordSet => recordSet.Type == RRType.A);
 
-        Change deleteChange = new()
+        if (recordSet != null)
         {
-            Action = ChangeAction.DELETE,
-            ResourceRecordSet = recordSet,
-        };
-
-        ChangeBatch batchRequest = new()
-        {
-            Changes = [deleteChange],
-        };
-
-        ChangeResourceRecordSetsRequest recordsetRequest = new()
-        {
-            HostedZoneId = hostedZoneId,
-            ChangeBatch = batchRequest,
-        };
-
-        ChangeResourceRecordSetsResponse recordsetResponse =
-            await route53Client.ChangeResourceRecordSetsAsync(recordsetRequest).ConfigureAwait(false);
-
-        GetChangeRequest changeRequest = new()
-        {
-            Id = recordsetResponse.ChangeInfo.Id,
-        };
-
-        while (true)
-        {
-            GetChangeResponse changeStatus = await route53Client.GetChangeAsync(changeRequest).ConfigureAwait(false);
-
-            if (changeStatus.ChangeInfo.Status == ChangeStatus.PENDING)
+            Change deleteChange = new()
             {
-                Thread.Sleep(TimeSpan.FromSeconds(2));
-            }
-            else
+                Action = ChangeAction.DELETE,
+                ResourceRecordSet = recordSet,
+            };
+
+            ChangeBatch batchRequest = new()
             {
-                break;
+                Changes = [deleteChange],
+            };
+
+            ChangeResourceRecordSetsRequest recordsetRequest = new()
+            {
+                HostedZoneId = hostedZoneId,
+                ChangeBatch = batchRequest,
+            };
+
+            context.Log("Change set created; sending request");
+            ChangeResourceRecordSetsResponse recordsetResponse =
+                await route53Client.ChangeResourceRecordSetsAsync(recordsetRequest).ConfigureAwait(false);
+
+            GetChangeRequest changeRequest = new()
+            {
+                Id = recordsetResponse.ChangeInfo.Id,
+            };
+
+            while (true)
+            {
+                GetChangeResponse changeStatus = await route53Client.GetChangeAsync(changeRequest).ConfigureAwait(false);
+
+                if (changeStatus.ChangeInfo.Status == ChangeStatus.PENDING)
+                {
+                    context.Log("Change is still pending");
+                    Thread.Sleep(TimeSpan.FromSeconds(2));
+                }
+                else
+                {
+                    context.Log("Change is complete");
+                    return;
+                }
             }
         }
+
+        context.Log("No record set found, nothing to do");
+    }
+
+    private static void Log(this ILambdaContext context, string message)
+    {
+        context.Logger.LogInformation(message);
     }
 }
