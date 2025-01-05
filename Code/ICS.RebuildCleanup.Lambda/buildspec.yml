@@ -17,6 +17,7 @@ phases:
       - mkdir Nuget
       - rm -rf Build
       - mkdir Build
+      - ls
       - dotnet publish ICS.RebuildCleanup.Lambda.csproj -o Code/Nuget
       - dotnet build ICS.RebuildCleanup.Lambda.csproj -o Code/Build -c Release
       - dotnet pack --no-restore ICS.RebuildCleanup.Lambda.csproj /p:OutputPath=Nuget -o Code/Nuget
