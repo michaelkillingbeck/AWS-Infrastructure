@@ -23,6 +23,7 @@ public static class Program
 
         using AmazonCodePipelineClient codePipelineClient = new();
         string jobId = job.Id;
+        context.Log(job.Id);
 
         using AmazonRoute53Client route53Client = new(RegionEndpoint.EUWest2);
         context.Log("Route53 client created");
