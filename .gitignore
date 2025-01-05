@@ -1,3 +1,4 @@
 .vscode/*
 Code/**/bin/*
+Code/**/Nuget/*
 Code/**/obj/*
