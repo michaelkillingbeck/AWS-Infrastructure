@@ -1,0 +1,30 @@
+version: 0.2
+
+env:
+  parameter-store:
+    S3_BUCKET_OUTPUT: /CodeBuild/S3/AWS_Infrastructure_Bucket
+
+phases:
+  install:
+    runtime-versions:
+      dotnet: latest
+    commands:
+      - /usr/local/bin/dotnet-install.sh --channel LTS
+
+  build:
+    commands:
+      - rm -rf Nuget
+      - mkdir Nuget
+      - rm -rf Build
+      - mkdir Build
+      - dotnet publish ICS.RebuildCleanup.Lambda.csproj -o Code/Nuget
+      - dotnet build ICS.RebuildCleanup.Lambda.csproj -o Code/Build -c Release
+      - dotnet pack --no-restore ICS.RebuildCleanup.Lambda.csproj /p:OutputPath=Nuget -o Code/Nuget
+      - cd Build
+      - zip ICS.RebuildCleanup.Lambda.zip *
+      - aws s3 cp ICS.RebuildCleanup.Lambda.zip s3://$S3_BUCKET_OUTPUT/ics-integration-cleanup/
+      
+artifacts:
+  files:
+    - 'Nuget/ICS.RebuildCleanup.Lambda.dll'
+  name: 'ICS.RebuildCleanup.Lambda'
