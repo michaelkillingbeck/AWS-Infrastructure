@@ -1,4 +1,5 @@
 ﻿using Amazon;
+using Amazon.CodePipeline.Model;
 using Amazon.Lambda.Core;
 using Amazon.Route53;
 using Amazon.Route53.Model;
@@ -14,12 +15,12 @@ public static class Program
     }
 
     [LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
-    public static async Task Handler(string eventInfo, ILambdaContext context)
+    public static async Task Handler(Job job, ILambdaContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
         context.Log("Starting execution");
 
-        context.Log(eventInfo);
+        context.Log(job.ToString());
 
         using AmazonRoute53Client route53Client = new(RegionEndpoint.EUWest2);
         context.Log("Route53 client created");
