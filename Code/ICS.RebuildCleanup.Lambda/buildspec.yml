@@ -13,6 +13,7 @@ phases:
 
   build:
     commands:
+      - cd Code/ICS.RebuildCleanup.Lambda
       - rm -rf Nuget
       - mkdir Nuget
       - rm -rf Build
