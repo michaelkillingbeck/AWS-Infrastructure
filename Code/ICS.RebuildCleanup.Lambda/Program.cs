@@ -11,14 +11,15 @@ public static class Program
 {
     public static void Main()
     {
-        Handler(null!).GetAwaiter().GetResult();
     }
 
     [LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
-    public static async Task Handler(ILambdaContext context)
+    public static async Task Handler(string eventInfo, ILambdaContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
         context.Log("Starting execution");
+
+        context.Log(eventInfo);
 
         using AmazonRoute53Client route53Client = new(RegionEndpoint.EUWest2);
         context.Log("Route53 client created");
