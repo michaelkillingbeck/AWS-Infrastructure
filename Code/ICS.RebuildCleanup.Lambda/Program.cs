@@ -1,4 +1,5 @@
 ﻿using Amazon;
+using Amazon.CodePipeline;
 using Amazon.CodePipeline.Model;
 using Amazon.Lambda.Core;
 using Amazon.Route53;
@@ -20,7 +21,8 @@ public static class Program
         ArgumentNullException.ThrowIfNull(context);
         context.Log("Starting execution");
 
-        context.Log(job.ToString());
+        using AmazonCodePipelineClient codePipelineClient = new();
+        string jobId = job.Id;
 
         using AmazonRoute53Client route53Client = new(RegionEndpoint.EUWest2);
         context.Log("Route53 client created");
@@ -41,6 +43,10 @@ public static class Program
         else
         {
             context.Log("No hosted zone found, stopping execution");
+            _ = await codePipelineClient.PutJobSuccessResultAsync(new PutJobSuccessResultRequest
+            {
+                JobId = jobId,
+            }).ConfigureAwait(false);
             return;
         }
 
@@ -91,6 +97,10 @@ public static class Program
                 else
                 {
                     context.Log("Change is complete");
+                    _ = await codePipelineClient.PutJobSuccessResultAsync(new PutJobSuccessResultRequest
+                    {
+                        JobId = jobId,
+                    }).ConfigureAwait(false);
                     return;
                 }
             }
