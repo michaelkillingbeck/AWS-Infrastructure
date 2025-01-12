@@ -1,4 +1,5 @@
-﻿using Amazon;
+﻿using System.Text.Json.Nodes;
+using Amazon;
 using Amazon.CodePipeline;
 using Amazon.CodePipeline.Model;
 using Amazon.Lambda.Core;
@@ -17,16 +18,17 @@ public static class Program
     {
     }
 
-    public static async Task Handler(CodePipelineEvent job, ILambdaContext context)
+    public static async Task Handler(JsonObject job, ILambdaContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
         context.Log("Starting execution");
+        context.Log(job.ToString());
 
         using AmazonCodePipelineClient codePipelineClient = new();
-        string jobId = job.Job.Id;
-        context.Log(job.Job.Id);
-        context.Log(job.Job.AccountId);
-        context.Log(job.Job.Data.ToString());
+        // string jobId = job.Job.Id;
+        // context.Log(job.Job.Id);
+        // context.Log(job.Job.AccountId);
+        // context.Log(job.Job.Data.ToString());
 
         using AmazonRoute53Client route53Client = new(RegionEndpoint.EUWest2);
         context.Log("Route53 client created");
@@ -49,7 +51,7 @@ public static class Program
             context.Log("No hosted zone found, stopping execution");
             _ = await codePipelineClient.PutJobSuccessResultAsync(new PutJobSuccessResultRequest
             {
-                JobId = jobId,
+                JobId = "testı",
             }).ConfigureAwait(false);
             return;
         }
