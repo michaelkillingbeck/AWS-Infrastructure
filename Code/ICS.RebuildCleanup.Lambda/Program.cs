@@ -5,6 +5,8 @@ using Amazon.Lambda.Core;
 using Amazon.Route53;
 using Amazon.Route53.Model;
 
+[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
+
 namespace ICS.RebuildCleanup.Lambda;
 
 #pragma warning disable CA1052
@@ -15,17 +17,16 @@ public static class Program
     {
     }
 
-    [LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
-    public static async Task Handler(Job job, ILambdaContext context)
+    public static async Task Handler(CodePipelineEvent job, ILambdaContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
         context.Log("Starting execution");
 
         using AmazonCodePipelineClient codePipelineClient = new();
-        string jobId = job.Id;
-        context.Log(job.Id);
-        context.Log(job.AccountId);
-        context.Log(job.Data.ToString());
+        string jobId = job.Job.Id;
+        context.Log(job.Job.Id);
+        context.Log(job.Job.AccountId);
+        context.Log(job.Job.Data.ToString());
 
         using AmazonRoute53Client route53Client = new(RegionEndpoint.EUWest2);
         context.Log("Route53 client created");
