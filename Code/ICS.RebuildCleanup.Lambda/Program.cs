@@ -105,7 +105,7 @@ public static class Program
                     context.Log("Change is complete");
                     _ = await codePipelineClient.PutJobSuccessResultAsync(new PutJobSuccessResultRequest
                     {
-                        JobId = jobId,
+                        JobId = "jobId",
                     }).ConfigureAwait(false);
                     return;
                 }
@@ -115,7 +115,7 @@ public static class Program
         context.Log("No record set found, nothing to do");
         _ = await codePipelineClient.PutJobSuccessResultAsync(new PutJobSuccessResultRequest
         {
-            JobId = jobId,
+            JobId = "jobId",
         }).ConfigureAwait(false);
     }
 
