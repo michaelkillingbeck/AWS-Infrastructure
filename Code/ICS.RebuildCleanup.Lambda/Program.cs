@@ -18,17 +18,15 @@ public static class Program
     {
     }
 
-    public static async Task Handler(JsonObject job, ILambdaContext context)
+    public static async Task Handler(CodePipelineEvent job, ILambdaContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(job);
+
         context.Log("Starting execution");
-        context.Log(job.ToString());
 
         using AmazonCodePipelineClient codePipelineClient = new();
-        // string jobId = job.Job.Id;
-        // context.Log(job.Job.Id);
-        // context.Log(job.Job.AccountId);
-        // context.Log(job.Job.Data.ToString());
+        string jobId = job.Job.Id;
 
         using AmazonRoute53Client route53Client = new(RegionEndpoint.EUWest2);
         context.Log("Route53 client created");
@@ -51,7 +49,7 @@ public static class Program
             context.Log("No hosted zone found, stopping execution");
             _ = await codePipelineClient.PutJobSuccessResultAsync(new PutJobSuccessResultRequest
             {
-                JobId = "testı",
+                JobId = jobId,
             }).ConfigureAwait(false);
             return;
         }
@@ -105,7 +103,7 @@ public static class Program
                     context.Log("Change is complete");
                     _ = await codePipelineClient.PutJobSuccessResultAsync(new PutJobSuccessResultRequest
                     {
-                        JobId = "jobId",
+                        JobId = jobId,
                     }).ConfigureAwait(false);
                     return;
                 }
@@ -115,7 +113,7 @@ public static class Program
         context.Log("No record set found, nothing to do");
         _ = await codePipelineClient.PutJobSuccessResultAsync(new PutJobSuccessResultRequest
         {
-            JobId = "jobId",
+            JobId = jobId,
         }).ConfigureAwait(false);
     }
 
