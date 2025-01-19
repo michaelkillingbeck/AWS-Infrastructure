@@ -59,7 +59,7 @@ public static class Program
             HostedZoneId = hostedZoneId,
         }).ConfigureAwait(false);
 
-        ResourceRecordSet? recordSet = resourceRecordSets.ResourceRecordSets.Find(recordSet => recordSet.Type == RRType.A);
+        ResourceRecordSet? recordSet = resourceRecordSets.ResourceRecordSets.Find(recordSet => recordSet.Name == "icd.integration.michaelkillingbeck.com");
 
         if (recordSet != null)
         {
